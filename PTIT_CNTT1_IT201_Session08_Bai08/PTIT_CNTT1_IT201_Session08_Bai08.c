@@ -1,71 +1,90 @@
 #include <stdio.h>
-#include <stdlib.h>
+
+// Hàm sắp xếp bằng Insertion Sort
 void insertionSort(int arr[], int n) {
-    for (int i = 1; i < n; i++) {
-        int key = arr[i];
-        int j = i - 1;
+    int i, key, j;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+
+        // Di chuyển các phần tử lớn hơn key về sau
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
-            j --;
+            j = j - 1;
         }
         arr[j + 1] = key;
     }
 }
-int linearSearch(int arr[], int n, int key) {
+
+// Hàm tìm kiếm tuyến tính
+int linearSearch(int arr[], int n, int target) {
     for (int i = 0; i < n; i++) {
-        if (arr[i] == key) {
-            return i;
-        }
+        if (arr[i] == target)
+            return i; // Trả về chỉ số
     }
-    return -1;
+    return -1; // Không tìm thấy
 }
-int binarySearch(int arr[], int n, int key) {
-    int left = 0, right = n - 1;
-    while (left < right) {
+
+// Hàm tìm kiếm nhị phân (trên mảng đã sắp xếp)
+int binarySearch(int arr[], int left, int right, int target) {
+    while (left <= right) {
         int mid = left + (right - left) / 2;
-        if (arr[mid] < key) {
+
+        if (arr[mid] == target)
+            return mid;
+        else if (arr[mid] < target)
             left = mid + 1;
-        }else {
-            right = mid;
-        }
+        else
+            right = mid - 1;
     }
-    if (arr[left] == key) {
-        return left;
-    }
-    return -1;
+    return -1; // Không tìm thấy
 }
+
 int main() {
-    int n , *arr , key;
-    printf("Moi ban nhap vao so luong phan tu: ");
+    int n;
+
+    // Nhập số phần tử
+    printf("Nhap so phan tu cua mang: ");
     scanf("%d", &n);
 
-    if (n <= 0 || n > 100) {
-        printf("Khong hop le");
-        return 0;
-    }
-    arr = (int*)malloc(n * sizeof(int));
+    int arr[n];
+
+    // Nhập mảng
+    printf("Nhap cac phan tu:\n");
     for (int i = 0; i < n; i++) {
-        printf("Nhap phan tu thu %d: ",i+1);
+        printf("arr[%d] = ", i);
         scanf("%d", &arr[i]);
     }
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-    insertionSort(arr, n);
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-    printf("Moi ban nhap vao gia tri can tim: ");
-    scanf("%d", &key);
 
-    int result = binarySearch(arr, n, key);
-    if (result == -1) {
-        printf("Khong ton tai");
-    }else {
-        printf("Vi tri thu %d", result);
-    }
-    free(arr);
+    // In mảng ban đầu
+    printf("\nMang ban dau: ");
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+
+    // Sắp xếp mảng
+    insertionSort(arr, n);
+
+    // In mảng sau khi sắp xếp
+    printf("Mang sau khi sap xep (Insertion Sort): ");
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+    int target;
+    printf("Nhap gia tri can tim: ");
+    scanf("%d", &target);
+
+    int resultLinear = linearSearch(arr, n, target);
+    if (resultLinear != -1)
+        printf("Tim kiem tuyen tinh: Tim thay tai vi tri %d\n", resultLinear);
+    else
+        printf("Tim kiem tuyen tinh: Khong tim thay.\n");
+
+    int resultBinary = binarySearch(arr, 0, n - 1, target);
+    if (resultBinary != -1)
+        printf("Tim kiem nhi phan: Tim thay tai vi tri %d\n", resultBinary);
+    else
+        printf("Tim kiem nhi phan: Khong tim thay.\n");
+
     return 0;
 }
